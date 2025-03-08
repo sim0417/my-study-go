@@ -101,6 +101,79 @@ func checkMaster(name string) bool {
 	// }
 }
 
+func watchPointerWork() {
+	value := 1
+	// 포인터 변수 선언하고 변수의 주소를 할당할 때 & 연산자 사용
+	valuePointer := &value
+
+	fmt.Println("value:", value)
+	fmt.Println("valuePointer:", valuePointer)
+	// 포인터 변수가 가리키는 값 출력할 땐 * 연산자 사용
+	fmt.Println("*valuePointer:", *valuePointer)
+
+	value = 2
+	fmt.Println("value:", value)
+	fmt.Println("valuePointer:", valuePointer)
+	fmt.Println("*valuePointer:", *valuePointer)
+
+	// 포인터 변수가 가리키는 값을 변경하면 원본 변수의 값도 변경된다.
+	*valuePointer = 3
+	fmt.Println("value:", value)
+	fmt.Println("valuePointer:", valuePointer)
+	fmt.Println("*valuePointer:", *valuePointer)
+}
+
+func watchArrayAndSlices() {
+
+	names := [5]string{"Hugo", "Tester"}
+	names[2] = "Master"
+	names[3] = "John"
+	names[4] = "Jane"
+
+	fmt.Println("array names:", names)
+
+	slicesNumber := []int{1, 2, 3}
+	slicesNumber = append(slicesNumber, 4)
+	fmt.Println("slicesNumber:", slicesNumber)
+
+	slicesNumber = append(slicesNumber, 5, 6, 7, 8, 9, 10)
+	fmt.Println("slicesNumber:", slicesNumber)
+}
+
+func watchMap() {
+	myDataMap := map[string]string{
+		"first":  "Hugo",
+		"second": "Tester",
+		"third":  "Master",
+	}
+
+	fmt.Println("myDataMap:", myDataMap)
+
+	myDataMap["fourth"] = "John"
+	fmt.Println("myDataMap:", myDataMap)
+
+	for key, value := range myDataMap {
+		fmt.Println("key:", key, "value:", value)
+	}
+}
+
+func watchStruct() {
+	type User struct {
+		id   int
+		Name string
+		Age  int
+	}
+
+	user := User{
+		id:   1,
+		Name: "Hugo",
+		Age:  20,
+	}
+
+	fmt.Println("user:", user)
+	fmt.Println("user.Name:", user.Name)
+}
+
 func main() {
 	teller.SayHello()
 	teller.Say(master)
@@ -141,6 +214,14 @@ func main() {
 
 	master = checkMaster("John")
 	fmt.Println("checkMaster, ", master)
+
+	watchPointerWork()
+
+	watchArrayAndSlices()
+
+	watchMap()
+
+	watchStruct()
 
 	os.Exit(0)
 }
