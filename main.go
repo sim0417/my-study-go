@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"my-study-go/banking"
-	teller "my-study-go/teller"
+	"my-study-go/mydict"
+	"my-study-go/teller"
 	"os"
 	"strings"
 )
@@ -242,6 +243,51 @@ func main() {
 
 	bankAccount.ChangeOwner("John")
 	fmt.Println("ChangeOwner", bankAccount.GetOwner())
+
+
+	fmt.Println("mydict test")
+	dictionary := mydict.Dictionary{}
+	fmt.Println("dictionary:", dictionary)
+
+	const myKey = "hello"
+
+	word, err := dictionary.Search(myKey)
+	fmt.Println("search 'hello'")
+
+	if err != nil {
+		fmt.Println(err)
+		dictionary.Add(myKey, "world")
+	} else {
+		fmt.Println(word)
+	}
+	fmt.Println("dictionary:", dictionary)
+
+	fmt.Println("add another 'hello'")
+
+	err = dictionary.Add(myKey, "world2")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("update 'hello' to 'hugo'")
+	err = dictionary.Update(myKey, "hugo")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("dictionary:", dictionary)
+
+	fmt.Println("update 'bello' to 'hugo'")
+	err = dictionary.Update("bello", "hugo")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("delete 'hello'")
+	err = dictionary.Delete(myKey)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("dictionary:", dictionary)
 
 	os.Exit(0)
 }
