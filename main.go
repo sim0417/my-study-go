@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"my-study-go/banking"
 	teller "my-study-go/teller"
 	"os"
 	"strings"
@@ -222,6 +223,25 @@ func main() {
 	watchMap()
 
 	watchStruct()
+
+	bankAccount := banking.NewAccount("Hugo")
+	fmt.Println("bankAccount:", bankAccount)
+	bankAccount.AddDeposit(1000)
+	fmt.Println("bankAccount.AddDeposit(1000)")
+	fmt.Println("bankAccount.GetBalance():", bankAccount.GetBalance())
+
+	bankAccount.Withdraw(800)
+	fmt.Println("bankAccount.Withdraw(800)")
+	fmt.Println("bankAccount.GetBalance():", bankAccount.GetBalance())
+
+	accountError := bankAccount.Withdraw(800)
+	fmt.Println("bankAccount.Withdraw(800)")
+	if accountError != nil {
+		fmt.Println(accountError)
+	}
+
+	bankAccount.ChangeOwner("John")
+	fmt.Println("ChangeOwner", bankAccount.GetOwner())
 
 	os.Exit(0)
 }
