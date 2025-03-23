@@ -75,37 +75,46 @@ func getPage(pageIndex int) []jobInfo {
 		return []jobInfo{}
 	}
 
+	channel := make(chan jobInfo)
 	jobs := []jobInfo{}
 
 	items := doc.Find(".item_recruit")
 	items.Each(func(i int, s *goquery.Selection) {
-		id := s.AttrOr("value", "")
-		badge := s.Find(".badge").Text()
-		title, _ := s.Find(".job_tit").Find("a").Attr("title")
-		corpName := s.Find(".corp_name").Text()
-		jobDate := s.Find(".job_date > .date").Text()
-
-		conditions := []string{}
-		s.Find(".job_condition").Find("span").Each(func(i int, s *goquery.Selection) {
-			conditions = append(conditions, cleanString(s.Text()))
-		})
-
-		jobSector := s.Find(".job_sector").Text()
-
-		jobInfo := jobInfo{
-			id:         id,
-			badge:      cleanString(badge),
-			title:      cleanString(title),
-			corpName:   cleanString(corpName),
-			jobDate:    cleanString(jobDate),
-			conditions: conditions,
-			jobSector:  cleanString(jobSector),
-		}
-
-		jobs = append(jobs, jobInfo)
+		go extractJobInfo(s, channel)
 	})
 
+	for i := 0; i < items.Length(); i++ {
+		jobInfo := <-channel
+		jobs = append(jobs, jobInfo)
+	}
+
 	return jobs
+}
+
+func extractJobInfo(s *goquery.Selection, channel chan<- jobInfo) {
+	id := s.AttrOr("value", "")
+	badge := s.Find(".badge").Text()
+	title, _ := s.Find(".job_tit").Find("a").Attr("title")
+	corpName := s.Find(".corp_name").Text()
+	jobDate := s.Find(".job_date > .date").Text()
+
+	conditions := []string{}
+	s.Find(".job_condition").Find("span").Each(func(i int, s *goquery.Selection) {
+		conditions = append(conditions, cleanString(s.Text()))
+	})
+
+	jobSector := s.Find(".job_sector").Text()
+
+	jobInfo := jobInfo{
+		id:         id,
+		badge:      cleanString(badge),
+		title:      cleanString(title),
+		corpName:   cleanString(corpName),
+		jobDate:    cleanString(jobDate),
+		conditions: conditions,
+		jobSector:  cleanString(jobSector),
+	}
+	channel <- jobInfo
 }
 
 func cleanString(str string) string {
